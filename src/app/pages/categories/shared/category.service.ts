@@ -31,7 +31,7 @@ getById(id: number): Observable<Category>{
 }
 
 create(category: Category): Observable<Category>{
-  this.http.post(this.apiPath, category).pipe(
+  return this.http.post(this.apiPath, category).pipe(
     catchError(this.handleError),
     map(this.jasonDataToCategory)
   )
