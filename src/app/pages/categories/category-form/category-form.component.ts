@@ -41,6 +41,18 @@ category: Category = new Category();
 
   }
 
+
+submitForm(){
+  this.submittingForm = true;
+
+  if (this.currentAction == "new")
+    this.createCategory();
+   else
+    this.updateCategory();  
+
+}
+
+
   //PRIVAYE METHODS
 
   private setCurrentAction(){
@@ -85,6 +97,45 @@ category: Category = new Category();
         this.pageTitle = "Editando categoria: " + categoryName;
       }
 
+  }
+
+
+  private createCategory(){
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
+    this.categotyService.create(category)
+     .subscribe(
+       category => this.actionsForSuccess(category),
+       error => this.actionsForError(error)
+     )
+  }
+
+  private updateCategory(){
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
+    this.categotyService.update(category)
+      .subscribe(
+        category => this.actionsForSuccess(category),
+        error => this.actionsForError(error)
+      )
+  }
+
+  private actionsForSuccess(category: Category){
+     toastr.success("solicitação processada com sucesso");
+     // redirect/reload component page 
+     this.router.navigateByUrl("categories", {skipLocationChange: true}).then(
+       () => this.router.navigate(["categories", category.id, "edit"])
+     )
+  }
+
+  private actionsForError(error){
+  toastr.error("ocorreu um erro ao processar a solicitação");
+
+  this.submittingForm = false;
+
+  if (error.status === 422)
+      this.serverErrorMessage = JSON.parse(error._body).errors;
+    else
+      this.serverErrorMessage = ["Falha na comunicação com o servidor. Por favor, tente mais tarde. "];
+  
   }
 
 }
