@@ -60,12 +60,17 @@ delete(id: number): Observable<any>{
 
 private jasonDataToEntries(jsonData: any[]): Entry[]{
   const entries: Entry[] = [];
-  jsonData.forEach(element => entries.push(element as Entry));
+
+  jsonData.forEach(element => {
+    const entry =  Object.assign(new Entry(), element);
+    entries.push(entry);
+  });
+
   return entries;
 }
 
 private jasonDataToEntry(jsonData: any): Entry{
-  return jsonData as Entry;
+  return Object.assign(new Entry(), jsonData);
 }
 
 private handleError(error: any): Observable<any>{
