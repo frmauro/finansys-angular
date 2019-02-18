@@ -23,6 +23,29 @@ serverErrorMessage: string[] = null;
 submittingForm: boolean = false;
 entry: Entry = new Entry();
 
+imaskConfig = {
+  mask: Number,
+  scale: 2,
+  thounsandsSeparator: '',
+  padFractionalZeros: true,
+  normalizeZeros: true,
+  radix: ','
+};
+
+ptBR = {
+  firstDayOfWeek: 0,
+  dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+  dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+  dayNamesMin: ['Do', 'Se', 'Te', 'Qu', 'Qu', 'Se', 'Sa'],
+  monthNames: [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'junho', 'Julho',
+    'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ],
+  monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+  today: 'Hoje',
+  clear: 'Limpar'
+}
+
   constructor(
     private categotyService: EntryService,
     private route: ActivatedRoute,
