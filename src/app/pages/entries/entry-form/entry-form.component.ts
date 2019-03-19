@@ -153,7 +153,7 @@ get typeOptions(): Array<any>{
 
 
   private createEntry(){
-    const entry: Entry = Object.assign(new Entry(), this.entryForm.value);
+    const entry: Entry = Entry.fromJson(this.entryForm.value);
     this.categotyService.create(entry)
      .subscribe(
        entry => this.actionsForSuccess(entry),
@@ -162,7 +162,7 @@ get typeOptions(): Array<any>{
   }
 
   private updateEntry(){
-    const entry: Entry = Object.assign(new Entry(), this.entryForm.value);
+    const entry: Entry = Entry.fromJson(this.entryForm.value);
     this.categotyService.update(entry)
       .subscribe(
         entry => this.actionsForSuccess(entry),

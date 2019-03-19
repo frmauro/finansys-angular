@@ -14,7 +14,7 @@ export class EntryService extends BaseResourceService<Entry> {
 
 
   constructor(protected injector: Injector, private categoryService: CategoryService) {
-    super("api/entries", injector);
+    super("api/entries", injector, Entry.fromJson);
    }
 
 
@@ -35,25 +35,6 @@ update(entry: Entry): Observable<Entry>{
       })
 )
 
-}
-
-
-
-//PRIVATES METHODS
-
-protected jasonDataToResources(jsonData: any[]): Entry[]{
-  const entries: Entry[] = [];
-
-  jsonData.forEach(element => {
-    const entry =  Object.assign(new Entry(), element);
-    entries.push(entry);
-  });
-
-  return entries;
-}
-
-protected jasonDataToResource(jsonData: any): Entry{
-  return Object.assign(new Entry(), jsonData);
 }
 
 
