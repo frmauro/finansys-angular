@@ -82,6 +82,9 @@ export class ReportsComponent implements OnInit {
   }
 
   private setChartData() {
+    this.expenseChartData = {};
+    this.revenueChartData = {};
+
     this.revenueChartData = this.getChartData('revenue', 'Gráfico de Receitas', '#9ccc65');
     this.expenseChartData = this.getChartData('expense', 'Gráfico de Despesas', '#e03131');
   }
@@ -89,9 +92,6 @@ export class ReportsComponent implements OnInit {
 
   private getChartData(entryType: string, title: string, color: string){
     const chartData = [];
-
-    this.expenseChartData = {};
-    this.revenueChartData = {};
 
     this.categories.forEach(category => {
       //filtering entries by category and type
