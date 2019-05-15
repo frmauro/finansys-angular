@@ -10,6 +10,7 @@ import { map, catchError } from "rxjs/operators";
 export abstract class BaseResourceService<T extends BaseResourceModel>{
 
   protected http: HttpClient;
+  protected domainApi: string = "http://192.168.99.100:8080/"; // endereço do container docker
 
   constructor(
     protected apiPath: string, 
@@ -21,7 +22,8 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
     }
 
     getAll(): Observable<T[]>{
-        return this.http.get(this.apiPath).pipe(
+      let fullApiPath = this.domainApi + this.apiPath;
+        return this.http.get(fullApiPath).pipe(
           map(this.jasonDataToResources.bind(this)),
           catchError(this.handleError)
         )
