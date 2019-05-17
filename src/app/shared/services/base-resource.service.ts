@@ -12,6 +12,7 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
   protected http: HttpClient;
   //protected domainApi: string = "http://192.168.99.100:8080/"; // endereço do container docker
   protected domainApi: string = "http://localhost:54190/"; // endereço do localhost do VS
+  private fullApiPath = this.domainApi + this.apiPath;
   
 
   constructor(
@@ -24,15 +25,14 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
     }
 
     getAll(): Observable<T[]>{
-      let fullApiPath = this.domainApi + this.apiPath;
-        return this.http.get(fullApiPath).pipe(
+        return this.http.get(this.fullApiPath).pipe(
           map(this.jasonDataToResources.bind(this)),
           catchError(this.handleError)
         )
       }
       
       getById(id: number): Observable<T>{
-        const url = `${this.apiPath}/${id}`;
+        const url = `${this.fullApiPath}/${id}`;
         return this.http.get(url).pipe(
           map(this.jasonDataToResource.bind(this)),
           catchError(this.handleError)
@@ -40,14 +40,15 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
       }
       
       create(resource: T): Observable<T>{
-        return this.http.post(this.apiPath, resource).pipe(
+        let url = this.fullApiPath + "/";
+        return this.http.post(url, resource).pipe(
           map(this.jasonDataToResource.bind(this)),
           catchError(this.handleError)
         )
       }
       
       update(resource: T): Observable<T>{
-        const url = `${this.apiPath}/${resource.id}`;
+        const url = `${this.fullApiPath}/${resource.id}`;
         return this.http.put(url, resource).pipe(
           map(() => resource),
           catchError(this.handleError)
@@ -55,7 +56,7 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
       }
       
       delete(id: number): Observable<any>{
-        const url = `${this.apiPath}/${id}`;
+        const url = `${this.fullApiPath}/${id}`;
         return this.http.delete(url).pipe(
           map(() => null),
           catchError(this.handleError)

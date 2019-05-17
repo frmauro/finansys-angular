@@ -20,7 +20,7 @@ export class CategoryFormComponent extends BaseResourceFormComponent<Category> {
 
   protected buildResourceForm(){
     this.resourceForm = this.formBuilder.group({
-        id: [null],
+        id: [0],
         name: [null, [Validators.required, Validators.minLength(2)]],
         description: [null]
     });
