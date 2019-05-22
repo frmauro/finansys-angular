@@ -11,6 +11,7 @@ export  class Entry extends BaseResourceModel{
         public date?: string,
         public paid?: boolean,
         public categoryId?: number,
+        public categoryName?: string,
         public category?: Category
     ){
         super();
