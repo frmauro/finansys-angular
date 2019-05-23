@@ -23,7 +23,8 @@ static types = {
 };
 
 static fromJson(jsonData: any): Entry{
-    return Object.assign(new Entry(), jsonData);
+    let entry = Object.assign(new Entry(), jsonData);
+    return entry;
 }
 
 get paidText(): string {
