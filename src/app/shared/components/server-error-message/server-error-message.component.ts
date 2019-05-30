@@ -7,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ServerErrorMessageComponent implements OnInit {
 
-  @Input('server-error-messages') serverErrorMessage: string[] = null;
+  @Input('server-error-messages') serverErrorMessages: string[] = null;
 
   constructor() { }
 

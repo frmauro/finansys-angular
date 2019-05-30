@@ -10,8 +10,8 @@ import { map, catchError } from "rxjs/operators";
 export abstract class BaseResourceService<T extends BaseResourceModel>{
 
   protected http: HttpClient;
-  //protected domainApi: string = "http://192.168.99.100:8080/"; // endereço do container docker
-  protected domainApi: string = "http://localhost:54190/"; // endereço do localhost do VS
+  protected domainApi: string = "http://192.168.99.100:8080/"; // endereço do container docker
+  //protected domainApi: string = "http://localhost:54190/"; // endereço do localhost do VS
   private fullApiPath = this.domainApi + this.apiPath;
   
 
