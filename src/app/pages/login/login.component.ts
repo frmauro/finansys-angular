@@ -1,10 +1,11 @@
-import { Component, Injector } from '@angular/core';
-import { Validators } from "@angular/forms";
+//import { Component, OnInit } from '@angular/core';
 
-import { BaseResourceFormComponent } from "../../shared/components/base-resource-form/base-resource-form.component";
+import { Component, Injector, OnInit } from '@angular/core';
 
-import { User } from "../login/shared/user.model";
-import { UserService } from "../login/shared/user.service";
+ import { Validators } from "@angular/forms";
+ import { BaseResourceFormComponent } from "../../shared/components/base-resource-form/base-resource-form.component";
+ import { User } from "../login/shared/user.model";
+ import { UserService } from "../login/shared/user.service";
 
 @Component({
   selector: 'app-login',
