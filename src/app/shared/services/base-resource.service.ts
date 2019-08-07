@@ -12,7 +12,9 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
   protected http: HttpClient;
   //protected domainApi: string = "http://192.168.99.100:8080/"; // endereço do container docker
   protected domainApi: string = "http://localhost:54190/"; // endereço do localhost do VS
+  protected domainApiAutentication: string = "http://localhost:3000/"; // endereco da api em nodejs para autenticação
   private fullApiPath = this.domainApi + this.apiPath;
+  private fullApiPathAutentication = this.domainApiAutentication;
   
 
   constructor(
@@ -61,6 +63,12 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
           map(() => null),
           catchError(this.handleError)
         )
+      }
+
+
+      autentication(resource: T) : string{
+        const url = this.domainApiAutentication;
+        return url;
       }
 
 

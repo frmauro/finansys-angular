@@ -1,6 +1,6 @@
 import { OnInit, AfterContentChecked, Injector } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import {  ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { BaseResourceModel } from "../../models/base-resource.model";
 import { BaseResourceService } from "../../services/base-resource.service";
@@ -11,27 +11,27 @@ import toastr from "toastr";
 
 export abstract class BaseResourceFormComponent<T extends BaseResourceModel> implements OnInit, AfterContentChecked {
 
-currentAction: string;
-resourceForm: FormGroup;
-pageTitle: string;
-serverErrorMessage: string[] = null; 
-submittingForm: boolean = false;
+  currentAction: string;
+  resourceForm: FormGroup;
+  pageTitle: string;
+  serverErrorMessage: string[] = null;
+  submittingForm: boolean = false;
 
-protected route: ActivatedRoute;
-protected router: Router;
-protected formBuilder: FormBuilder;
+  protected route: ActivatedRoute;
+  protected router: Router;
+  protected formBuilder: FormBuilder;
 
 
   constructor(
-      protected injector: Injector,
-      public resource: T,
-      protected resourceService: BaseResourceService<T>,
-      protected jsonDataToResourceFn: (jsonData) => T
+    protected injector: Injector,
+    public resource: T,
+    protected resourceService: BaseResourceService<T>,
+    protected jsonDataToResourceFn: (jsonData) => T
   ) {
-      this.route = this.injector.get(ActivatedRoute);
-      this.router = this.injector.get(Router);
-      this.formBuilder = this.injector.get(FormBuilder);
-   }
+    this.route = this.injector.get(ActivatedRoute);
+    this.router = this.injector.get(Router);
+    this.formBuilder = this.injector.get(FormBuilder);
+  }
 
   ngOnInit() {
     this.setCurrentAction();
@@ -39,79 +39,95 @@ protected formBuilder: FormBuilder;
     this.loadResource();
   }
 
-  ngAfterContentChecked(){
+  ngAfterContentChecked() {
     this.setPageTitle();
+  }
+
+
+  submitForm() {
+    this.submittingForm = true;
+
+    if (this.currentAction == "new")
+      this.createResource();
+
+    if (this.currentAction == "login")
+      this.authenticateResource();
+
+    if (this.currentAction == "edit")
+      this.updateResource();
 
   }
 
 
-submitForm(){
-  this.submittingForm = true;
-
-  if (this.currentAction == "new")
-    this.createResource();
-   else
-    this.updateResource();  
-
-}
-
-
   //PRIVAYE METHODS
 
-  protected setCurrentAction(){
+  protected setCurrentAction() {
     if (this.route.snapshot.url[0].path == "new")
       this.currentAction = "new"
+
+    if (this.route.snapshot.url[0].path == "login")
+      this.currentAction = "login"
     else
       this.currentAction = "edit"
   }
 
 
-  protected loadResource(){
+  protected loadResource() {
 
-    if (this.currentAction == "edit"){
-      this.route.paramMap.pipe(
-        switchMap(params => this.resourceService.getById(+params.get("id")))
-      )
-      .subscribe(
-        (resource) => {
-          this.resource = resource;
-          this.resourceForm.patchValue(resource); //binds loaded resource data to resourceForm        
-        },
-        (error) => alert('ocorreu um erro no servidor, tente mais tarde.')
-      )
+    if (this.currentAction != "login") {
 
+      if (this.currentAction == "edit") {
+        this.route.paramMap.pipe(
+          switchMap(params => this.resourceService.getById(+params.get("id")))
+        )
+          .subscribe(
+            (resource) => {
+              this.resource = resource;
+              this.resourceForm.patchValue(resource); //binds loaded resource data to resourceForm        
+            },
+            (error) => alert('ocorreu um erro no servidor, tente mais tarde.')
+          )
+
+      }
     }
 
   }
 
 
-  protected setPageTitle(){
+  protected setPageTitle() {
     if (this.currentAction == "new")
       this.pageTitle = this.creationPageTitle();
-      else{
-        this.pageTitle = this.editionPageTitle();
-      }
 
+    if (this.currentAction == "login")
+      this.pageTitle = this.loginPageTitle();
+
+    if (this.currentAction == "edit")
+      this.pageTitle = this.editionPageTitle();
   }
 
-  protected creationPageTitle(): string{
-      return "Novo";
+  protected creationPageTitle(): string {
+    return "Novo";
   }
 
-  protected editionPageTitle(): string{
+  protected editionPageTitle(): string {
     return "Edição";
-}
+  }
 
-  protected createResource(){
+
+  protected loginPageTitle(): string {
+    return "Login";
+  }
+
+  protected createResource() {
     const resource: T = this.jsonDataToResourceFn(this.resourceForm.value);
     this.resourceService.create(resource)
-     .subscribe(
-       resource => this.actionsForSuccess(resource),
-       error => this.actionsForError(error)
-     )
+      .subscribe(
+        resource => this.actionsForSuccess(resource),
+        error => this.actionsForError(error)
+      )
   }
 
-  protected updateResource(){
+  protected updateResource() {
     const resource: T = this.jsonDataToResourceFn(this.resourceForm.value);
     this.resourceService.update(resource)
       .subscribe(
@@ -120,25 +136,31 @@ submitForm(){
       )
   }
 
-  protected actionsForSuccess(resource: T){
-     toastr.success("solicitação processada com sucesso");
-     const baseComponentPath: string = this.route.snapshot.parent.url[0].path;
-     // redirect/reload component page 
-     this.router.navigateByUrl(baseComponentPath, {skipLocationChange: true}).then(
-       () => this.router.navigate([baseComponentPath, resource.id, "edit"])
-     )
+
+  protected authenticateResource() {
+    const resource: T = this.jsonDataToResourceFn(this.resourceForm.value);
+    let url = this.resourceService.autentication(resource);
   }
 
-  protected actionsForError(error){
-  toastr.error("ocorreu um erro ao processar a solicitação");
+  protected actionsForSuccess(resource: T) {
+    toastr.success("solicitação processada com sucesso");
+    const baseComponentPath: string = this.route.snapshot.parent.url[0].path;
+    // redirect/reload component page 
+    this.router.navigateByUrl(baseComponentPath, { skipLocationChange: true }).then(
+      () => this.router.navigate([baseComponentPath, resource.id, "edit"])
+    )
+  }
 
-  this.submittingForm = false;
+  protected actionsForError(error) {
+    toastr.error("ocorreu um erro ao processar a solicitação");
 
-  if (error.status === 422)
+    this.submittingForm = false;
+
+    if (error.status === 422)
       this.serverErrorMessage = JSON.parse(error._body).errors;
     else
       this.serverErrorMessage = ["Falha na comunicação com o servidor. Por favor, tente mais tarde. "];
-  
+
   }
 
   protected abstract buildResourceForm(): void;
