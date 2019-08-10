@@ -3,6 +3,7 @@ export class User extends BaseResourceModel {
     id?: number;
     email: string;
     password: string;
+    token: string;
 
     constructor(
     ){

@@ -139,7 +139,21 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
 
   protected authenticateResource() {
     const resource: T = this.jsonDataToResourceFn(this.resourceForm.value);
-    let url = this.resourceService.autentication(resource);
+    this.resourceService.autentication(resource)
+      .subscribe(
+        resource => this.actionForSuccessToLogin(resource),
+        error => this.actionsForError(error)
+      );
+  }
+
+  protected actionForSuccessToLogin(resource: any) {
+    if (!resource.success) {
+      toastr.error("Usuário não autenticado");
+      this.serverErrorMessage = ["Usuário não autenticado. "];
+    }else{
+      this.router.navigate(['/reports']);
+    }
+
   }
 
   protected actionsForSuccess(resource: T) {
