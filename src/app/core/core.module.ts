@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 
 //import { HttpClientInMemoryWebApiModule } from "angular-in-memory-web-api";
 //import { InMemoryDatabase } from "../in-memory-database";
+
+import { JwtInterceptor } from "./helpers/jwt.interceptor";
 
 import { NavbarComponent } from './components/navbar/navbar.component';
 
@@ -15,6 +17,9 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 @NgModule({
   declarations: [
     NavbarComponent
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
   imports: [
     CommonModule,

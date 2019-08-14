@@ -71,16 +71,18 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
   }
 
 
-  autentication(resource: T): Observable<T> {
+  autentication(resource: T): Observable<any> {
     const url = this.fullApiPathAutentication;
     return this.http.post(url, resource).pipe(
       map(res => {
-        let obj = this.jasonDataToResource.bind(this);
-        if (obj && obj.token) {
+        let objJson = JSON.stringify(res);
+        let obj = JSON.parse(objJson);
+        let token = obj.token;
+        if (obj && token) {
           localStorage.setItem('currentUser', JSON.stringify(obj));
           this.currentUserSubject.next(obj);
         }
-
+        return obj;
       }
       ),
       catchError(this.handleError)
@@ -93,7 +95,7 @@ export abstract class BaseResourceService<T extends BaseResourceModel>{
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-}
+  }
 
 
 
